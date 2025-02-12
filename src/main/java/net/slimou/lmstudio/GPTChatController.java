@@ -1,8 +1,10 @@
 package net.slimou.lmstudio;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 public class GPTChatController {
@@ -15,9 +17,15 @@ public class GPTChatController {
 
     @GetMapping("/")
     public String index(Model model) {
-        String prompt = "Willkommen auf der Startseite!";
-        String completion = gptChatService.getCompletion(prompt);
-        model.addAttribute("message", completion);
+        model.addAttribute("chatForm", new ChatForm());
+        return "index";
+    }
+
+    @PostMapping("/send")
+    public String send(@ModelAttribute ChatForm chatForm, Model model) {
+        String completion = gptChatService.getCompletion(chatForm.getPrompt());
+        model.addAttribute("response", completion);
+        model.addAttribute("chatForm", chatForm);
         return "index";
     }
 }

@@ -4,6 +4,14 @@
   <title>Startseite</title>
 </head>
 <body>
-<h1 th:text="${message}">Willkommen auf der Startseite!</h1>
+<h1>Willkommen auf der Startseite!</h1>
+<form action="#" th:action="@{/send}" th:object="${chatForm}" method="post">
+  <textarea th:field="*{prompt}" placeholder="Geben Sie Ihren Text ein"></textarea>
+  <button type="submit">Senden</button>
+</form>
+<div>
+  <h2>Antwort:</h2>
+  <p th:text="${response}"></p>
+</div>
 </body>
 </html>
