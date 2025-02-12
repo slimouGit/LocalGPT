@@ -10,8 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
-import static net.slimou.lmstudio.Config.LOCAL_API_URL;
-import static net.slimou.lmstudio.Config.MODEL_NAME;
+import static net.slimou.lmstudio.Config.*;
 
 @Service
 public class GPTChatService {
@@ -28,7 +27,9 @@ public class GPTChatService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
+        String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [" +
+                "{\"role\": \"system\", \"content\": \""+ SYSTEM_PROMPT +"\"}," +
+                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(LOCAL_API_URL, HttpMethod.POST, entity, String.class);
