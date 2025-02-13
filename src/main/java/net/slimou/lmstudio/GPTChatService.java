@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static net.slimou.lmstudio.Config.*;
 
 @Service
@@ -23,9 +25,11 @@ public class GPTChatService {
         this.objectMapper = objectMapper;
     }
 
-    public String getCompletion(String prompt) {
+    public String getCompletion(List<String> selectedIcds, String enteredDiagnosis) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String prompt = PromptGenerator.generatePrompt(selectedIcds, enteredDiagnosis);
 
         String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [" +
                 "{\"role\": \"system\", \"content\": \""+ SYSTEM_PROMPT +"\"}," +

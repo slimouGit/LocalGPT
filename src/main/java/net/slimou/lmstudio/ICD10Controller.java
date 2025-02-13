@@ -2,6 +2,7 @@ package net.slimou.lmstudio;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,6 +44,6 @@ public class ICD10Controller {
     @PostMapping("/sendICDCodes")
     public String sendICDCodes(@RequestBody Map<String, String> request) {
         String prompt = request.get("prompt");
-        return gptChatService.getCompletion(prompt);
+        return gptChatService.getCompletion(Collections.singletonList(prompt), "");
     }
 }

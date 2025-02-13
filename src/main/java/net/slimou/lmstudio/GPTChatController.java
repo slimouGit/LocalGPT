@@ -23,7 +23,7 @@ public class GPTChatController {
 
     @PostMapping("/send")
     public String send(@ModelAttribute ChatForm chatForm, Model model) {
-        String completion = gptChatService.getCompletion(chatForm.getPrompt());
+        String completion = gptChatService.getCompletion(chatForm.getPrompt(), "");
         model.addAttribute("response", completion);
         model.addAttribute("chatForm", chatForm);
         return "index";
