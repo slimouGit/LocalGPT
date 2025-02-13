@@ -1,4 +1,4 @@
-package net.slimou.lmstudio.controller;
+package net.slimou.lmstudio;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -3,11 +3,36 @@
 <head>
   <title>Startseite</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <script>
+    function searchICD10Code() {
+      const description = document.getElementById("description").value;
+      fetch(`/getICD10Code?description=${description}`)
+              .then(response => response.text())
+              .then(data => {
+                const resultDiv = document.getElementById("results");
+                const newResult = document.createElement("div");
+                newResult.textContent = data;
+                resultDiv.appendChild(newResult);
+              });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        searchICD10Code();
+      });
+    });
+  </script>
 </head>
 <body>
 <div class="container">
-  <h1 class="center-align">Willkommen auf der Startseite!</h1>
+  <h1 class="center-align">ICD-10 Code Search</h1>
   <div class="row">
+  <form id="searchForm">
+    <input type="text" id="description" placeholder="Enter a word" required>
+    <button type="submit">Search</button>
+  </form>
+  <div id="results"></div>
     <form class="col s12" action="#" th:action="@{/send}" th:object="${chatForm}" method="post">
       <div class="row">
         <div class="input-field col s12">
