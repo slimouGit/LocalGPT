@@ -29,7 +29,8 @@ public class GPTChatService {
 
         String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [" +
                 "{\"role\": \"system\", \"content\": \""+ SYSTEM_PROMPT +"\"}," +
-                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
+                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}]," +
+                "\"max_tokens\": " + MAX_TOKENS + ", \"temperature\": " + TEMPERATURE + "}";
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(LOCAL_API_URL, HttpMethod.POST, entity, String.class);
