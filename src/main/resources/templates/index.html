@@ -62,15 +62,17 @@
 </head>
 <body>
 <div class="container">
-  <h1 class="center-align">ICD-10 Code Search</h1>
+  <h3 class="left">Diagnose nach ICD</h3>
   <div class="row">
     <form id="searchForm">
-      <input type="text" id="description" placeholder="Enter a word" required>
-      <button type="submit">Search</button>
+      <input type="text" id="description" required>
     </form>
     <div id="results"></div>
-    <button id="sendButton" class="btn waves-effect waves-light">Send ICD Codes</button>
-    <textarea id="responseTextarea" class="materialize-textarea" placeholder="Response will be displayed here"></textarea>
+    <button id="sendButton" class="btn waves-effect waves-light" style="background-color: #1535a1;margin-top:1em;">Speichern</button>
+  </div>
+  <div class="row">
+    <h3 class="left">Wertende Ärztliche Stellungnahme</h3>
+    <textarea id="responseTextarea" class="materialize-textarea"></textarea>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
