@@ -27,13 +27,15 @@ public class ICD10Controller {
         icd10Map.put("F13.3", "Abhängigkeitssyndrom durch Sedativa oder Hypnotika");
         icd10Map.put("M54.6", "Schmerzen im unteren Rückenbereich");
     }
-    //http://localhost:8080/getICD10Code?description=R%C3%BCcken
+
     @GetMapping("/getICD10Code")
     public String getICD10Code(@RequestParam String description) {
-        return icd10Map.entrySet()
+        String result = icd10Map.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().toLowerCase().contains(description.toLowerCase()))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.joining(", ", "Found codes: ", ""));
+
+        return result.equals("Found codes: ") ? "" : result;
     }
 }
