@@ -33,9 +33,9 @@ public class ICD10Controller {
         String result = icd10Map.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().toLowerCase().contains(description.toLowerCase()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.joining(", ", "Found codes: ", ""));
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .collect(Collectors.joining(", "));
 
-        return result.equals("Found codes: ") ? "" : result;
+        return result.isEmpty() ? "" : result;
     }
 }
