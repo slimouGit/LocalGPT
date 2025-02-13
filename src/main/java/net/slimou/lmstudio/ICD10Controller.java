@@ -1,8 +1,6 @@
 package net.slimou.lmstudio;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +10,11 @@ import java.util.stream.Collectors;
 public class ICD10Controller {
 
     private static final Map<String, String> icd10Map = new HashMap<>();
+    private final GPTChatService gptChatService;
+
+    public ICD10Controller(GPTChatService gptChatService) {
+        this.gptChatService = gptChatService;
+    }
 
     static {
         icd10Map.put("F32.0", "Leichte depressive Episode");
@@ -30,12 +33,16 @@ public class ICD10Controller {
 
     @GetMapping("/getICD10Code")
     public String getICD10Code(@RequestParam String description) {
-        String result = icd10Map.entrySet()
+        return icd10Map.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().toLowerCase().contains(description.toLowerCase()))
                 .map(entry -> entry.getKey() + ": " + entry.getValue())
                 .collect(Collectors.joining(", "));
+    }
 
-        return result.isEmpty() ? "" : result;
+    @PostMapping("/sendICDCodes")
+    public String sendICDCodes(@RequestBody Map<String, String> request) {
+        String prompt = request.get("prompt");
+        return gptChatService.getCompletion(prompt);
     }
 }
