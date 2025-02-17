@@ -17,8 +17,8 @@ public class LMStudioClient {
         Map<String, Object> requestBody = Map.of(
                 "model", "llama-2-7b-chat",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "Du bist ein medizinischer Dokumentenanalyst. Extrahiere vollständige Abschnitte, die sich auf das Thema beziehen."),
-                        Map.of("role", "user", "content", "Finde alle relevanten Informationen zu: '" + query + "' im folgenden Dokument und gib den kompletten zusammenhängenden Abschnitt aus.\n" + pdfText)
+                        Map.of("role", "system", "content", "Du bist ein medizinischer Dokumentenanalyst."),
+                        Map.of("role", "user", "content", "Finde alle relevanten Informationen zu: '" + query + "'\n" + pdfText)
                 ),
                 "temperature", 0.2
         );
