@@ -11,11 +11,23 @@
 </div>
 <div class="container">
     <h3 class="left">Anamnese</h3>
+    <form method="POST" enctype="multipart/form-data" action="/anamnese/upload">
+        <div class="input-field">
+            <label for="file">PDF-Datei hochladen</label>
+            <input type="file" id="file" name="file" accept="application/pdf" required>
+        </div>
+        <div class="input-field">
+            <label for="searchTerm">Suchbegriff</label>
+            <input type="text" id="searchTerm" name="searchTerm" placeholder="Suchbegriff eingeben" required>
+        </div>
+        <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Analyse starten</button>
+    </form>
+
     <div class="row">
-        <p>Hier können Sie die Anamnese des Patienten eingeben.</p>
+        <a href="/" class="btn waves-effect waves-light" style="background-color: #1535a1;">Zurück</a>
     </div>
 </div>
-</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
