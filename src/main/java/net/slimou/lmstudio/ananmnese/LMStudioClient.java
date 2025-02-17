@@ -1,11 +1,9 @@
 package net.slimou.lmstudio.ananmnese;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.http.MediaType;
+import java.util.*;
 
 @Service
 public class LMStudioClient {
@@ -15,14 +13,14 @@ public class LMStudioClient {
         this.webClient = webClientBuilder.baseUrl("http://localhost:1234/v1/chat/completions").build();
     }
 
-    public String searchTextInPdf(String pdfText, String query) {
+    public String searchTextWithContext(String pdfText, String query) {
         Map<String, Object> requestBody = Map.of(
-                "model", "meta-llama-3.1-8b-instruct",
+                "model", "llama-2-7b-chat",
                 "messages", List.of(
-                        Map.of("role", "system", "content", "Du bist ein Dokumentenanalyst."),
-                        Map.of("role", "user", "content", "Finde alle Vorkommen von: '" + query + "'\n" + pdfText)
+                        Map.of("role", "system", "content", "Du bist ein medizinischer Dokumentenanalyst. Extrahiere vollständige Abschnitte, die sich auf das Thema beziehen."),
+                        Map.of("role", "user", "content", "Finde alle relevanten Informationen zu: '" + query + "' im folgenden Dokument und gib den kompletten zusammenhängenden Abschnitt aus.\n" + pdfText)
                 ),
-                "temperature", 0.3
+                "temperature", 0.2
         );
 
         return webClient.post()

@@ -12,16 +12,16 @@ import java.nio.file.Paths;
 
 @Controller
 public class AnamneseController {
-    private final AnamneseService anamneseService;
+    private final LMStudioClient lmStudioClient;
     private final String uploadDir = "uploads/";
 
-    public AnamneseController(AnamneseService anamneseService) {
-        this.anamneseService = anamneseService;
+    public AnamneseController(LMStudioClient lmStudioClient) {
+        this.lmStudioClient = lmStudioClient;
     }
 
     @GetMapping("/anamnese")
     public String anamnese(Model model) {
-        return "anamnese";
+        return "anamnese"; // Lädt anamnese.html aus templates
     }
 
     @PostMapping("/anamnese/upload")
@@ -32,13 +32,11 @@ public class AnamneseController {
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
-
             Path filePath = uploadPath.resolve(file.getOriginalFilename());
             file.transferTo(filePath);
 
             String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString());
-            String result = AnamneseService.extractRelevantSection(pdfText, searchTerm);
-
+            String result = lmStudioClient.searchTextWithContext(pdfText, searchTerm);
             return ResponseEntity.ok(result);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Fehler beim Hochladen: " + e.getMessage());
