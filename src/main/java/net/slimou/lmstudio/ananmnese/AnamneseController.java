@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 
 @Controller
 public class AnamneseController {
-
     private final AnamneseService anamneseService;
     private final String uploadDir = "uploads/";
 
@@ -29,10 +28,6 @@ public class AnamneseController {
     @ResponseBody
     public ResponseEntity<String> uploadAndAnalyze(@RequestParam("file") MultipartFile file, @RequestParam("searchTerm") String searchTerm) {
         try {
-            if (file.isEmpty() || !file.getOriginalFilename().endsWith(".pdf")) {
-                return ResponseEntity.badRequest().body("Bitte eine gültige PDF-Datei hochladen.");
-            }
-
             Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -41,10 +36,12 @@ public class AnamneseController {
             Path filePath = uploadPath.resolve(file.getOriginalFilename());
             file.transferTo(filePath);
 
-            String result = anamneseService.analyzePdf(filePath.toString(), searchTerm);
+            String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString());
+            String result = AnamneseService.extractRelevantSection(pdfText, searchTerm);
+
             return ResponseEntity.ok(result);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Fehler beim Dateiupload: " + e.getMessage());
+            return ResponseEntity.status(500).body("Fehler beim Hochladen: " + e.getMessage());
         }
     }
 }

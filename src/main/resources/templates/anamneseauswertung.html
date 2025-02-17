@@ -1,0 +1,25 @@
+<!-- src/main/resources/templates/anamnese.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Anamnese-Auswertung</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <h3>Anamnese-Auswertung</h3>
+  <form method="POST" enctype="multipart/form-data" action="/anamnese/upload">
+    <div class="input-field">
+      <label for="file">Anamnese-PDF</label>
+      <input type="file" id="file" name="file" accept="application/pdf" required>
+    </div>
+    <div class="input-field">
+      <label for="searchTerm">Suchbegriff</label>
+      <input type="text" id="searchTerm" name="searchTerm" placeholder="z. B. Allergien" required>
+    </div>
+    <button type="submit" class="btn waves-effect">Auswerten</button>
+  </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
