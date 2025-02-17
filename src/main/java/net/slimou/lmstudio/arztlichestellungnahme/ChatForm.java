@@ -1,4 +1,4 @@
-package net.slimou.lmstudio;
+package net.slimou.lmstudio.arztlichestellungnahme;
 
 import java.util.Collections;
 import java.util.List;

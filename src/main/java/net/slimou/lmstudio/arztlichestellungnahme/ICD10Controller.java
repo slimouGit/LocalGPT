@@ -1,4 +1,4 @@
-package net.slimou.lmstudio;
+package net.slimou.lmstudio.arztlichestellungnahme;
 
 import org.springframework.web.bind.annotation.*;
 
