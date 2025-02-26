@@ -1,7 +1,8 @@
-package net.slimou.lmstudio.ananmnese;
+package net.slimou.lmstudio.anamnese_regex;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+
 import java.io.File;
 import java.io.IOException;
 

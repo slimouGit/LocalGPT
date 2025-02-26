@@ -1,5 +1,6 @@
 package net.slimou.lmstudio.ananmnese;
 
+import net.slimou.lmstudio.anamnese_regex.PdfTextExtractor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class AnamneseController {
     }
 
     @GetMapping("/anamnese")
-    public String anamnese() {
+    public String anamnese(Model model) {
         // Prüfen, ob die HTML-Datei vorhanden ist
         Path templatePath = Paths.get("src/main/resources/templates/anamnese.html");
         if (!Files.exists(templatePath)) {
@@ -34,8 +35,7 @@ public class AnamneseController {
     }
 
     @PostMapping("/anamnese/upload")
-    @ResponseBody
-    public ResponseEntity<String> uploadAndAnalyze(@RequestParam("file") MultipartFile file, @RequestParam("searchTerm") String searchTerm) {
+    public String uploadAndAnalyze(@RequestParam("file") MultipartFile file, @RequestParam("searchTerm") String searchTerm, Model model) {
         try {
             Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
@@ -50,9 +50,11 @@ public class AnamneseController {
             JsonNode jsonNode = objectMapper.readTree(modelResponse);
             String modelContent = jsonNode.path("choices").get(0).path("message").path("content").asText();
 
-            return ResponseEntity.ok(modelContent);
+            model.addAttribute("analysisResult", modelContent);
+            return "anamnese";
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fehler beim Hochladen: " + e.getMessage());
+            model.addAttribute("error", "Fehler beim Hochladen: " + e.getMessage());
+            return "anamnese";
         }
     }
 }

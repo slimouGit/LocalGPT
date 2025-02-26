@@ -18,7 +18,7 @@ public class LMStudioClient {
                 "model", "llama-2-7b-chat",
                 "messages", List.of(
                         Map.of("role", "system", "content", "Du bist ein medizinischer Dokumentenanalyst."),
-                        Map.of("role", "user", "content", "Finde nur die relevanten Informationen zu: '" + query + "'\n" + pdfText + " Erfasse nur die Daten aus dem Dokument und verzichte auf eigene Kommentare und Interprätationen. Verzichte auch auf Angaben zur Person.")
+                        Map.of("role", "user", "content", "Finde nur die relevanten Informationen zu: '" + query + " also die Informationen, die sich direkt auf " + query + " beziehen '\n" + pdfText + " Erfasse nur die Daten aus dem Dokument und verzichte auf eigene Kommentare und Interprätationen. Verzichte auch auf Angaben zur Person.")
                 ),
                 "temperature", 0.2
         );
