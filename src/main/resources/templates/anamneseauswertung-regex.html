@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Anamnese</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+  <a href="/" class="btn waves-effect waves-light" style="background-color: #1535a1;">Ärztliche Stellungnahme</a>
+  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #1535a1;">Anamnese via AI</a>
+  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #1535a1;">Anamnese via Regex</a>
+</div>
+<div class="container">
+  <h3 class="left">Anamnese via Regex</h3>
+  <form method="POST" enctype="multipart/form-data" action="/anamnese-regex/upload">
+    <div class="input-field">
+      <input type="file" id="file" name="file" accept="application/pdf" required>
+    </div>
+    <div class="input-field">
+      <label for="searchTerm">Suchbegriff</label>
+      <input type="text" id="searchTerm" name="searchTerm" placeholder="Suchbegriff eingeben" required>
+    </div>
+    <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Analyse starten</button>
+  </form>
+
+  <div class="row">
+    <h5>Analyse Ergebnis:</h5>
+    <p th:text="${analysisResult}">Das Ergebnis der Analyse wird hier angezeigt.</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
