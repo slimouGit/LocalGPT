@@ -1,5 +1,7 @@
 package net.slimou.lmstudio.transcriptor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,8 +14,11 @@ import java.nio.file.Paths;
 public class TranscriptorService {
 
     private final Path uploadDir = Paths.get("uploads");
+    private final LlmClient llmClient;
 
-    public TranscriptorService() throws IOException {
+    @Autowired
+    public TranscriptorService(LlmClient llmClient) throws IOException {
+        this.llmClient = llmClient;
         Files.createDirectories(uploadDir);
     }
 
@@ -21,5 +26,9 @@ public class TranscriptorService {
         Path filePath = uploadDir.resolve(file.getOriginalFilename());
         Files.copy(file.getInputStream(), filePath);
         return filePath.toString();
+    }
+
+    public String generateTranscript(String videoFilePath) {
+        return llmClient.generateTranscript(videoFilePath);
     }
 }

@@ -21,6 +21,13 @@
     </div>
     <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Upload</button>
   </form>
+  <div th:if="${message}">
+    <p th:text="${message}"></p>
+  </div>
+  <div th:if="${transcript}">
+    <h5>Transcript:</h5>
+    <p th:text="${transcript}"></p>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
