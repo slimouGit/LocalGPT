@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Transcriptor</title>
+  <title>Transcript</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body>
@@ -12,11 +12,10 @@
   <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #1535a1;">Transcriptor</a>
 </div>
 <div class="container">
-  <h3>Transcriptor Page</h3>
-  <p>This is the Transcriptor page.</p>
+  <h3>Transcript</h3>
   <form method="POST" enctype="multipart/form-data" action="/transcriptor/upload">
     <div class="input-field">
-      <label for="videoFile">Select video file:</label>
+      <label for="videoFile">Datei:</label>
       <input type="file" id="videoFile" name="videoFile" accept="video/*,audio/*" required>
     </div>
     <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Upload</button>
@@ -29,7 +28,7 @@
     <p th:text="${transcript}"></p>
   </div>
   <div th:if="${summary}">
-    <h5>Summary:</h5>
+    <h5>Zusammenfassung:</h5>
     <p th:text="${summary}"></p>
   </div>
 </div>

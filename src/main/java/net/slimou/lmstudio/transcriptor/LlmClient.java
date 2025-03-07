@@ -1,5 +1,7 @@
 package net.slimou.lmstudio.transcriptor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -49,30 +51,37 @@ public class LlmClient {
                 .block();
     }
 
-    /**
-     * Erstellt eine Zusammenfassung des Transkripts mit OpenAI GPT-4o
-     */
     public String generateSummary(String transcript) {
-        // Erstelle die Nachrichtenstruktur für OpenAI Chat API
         List<Map<String, String>> messages = List.of(
                 Map.of("role", "system", "content", "You are an AI assistant that summarizes transcripts."),
-                Map.of("role", "user", "content", "Summarize the following transcript:\n" + transcript)
+                Map.of("role", "user", "content", "Summarize the following transcript:\n" + transcript + " Use same language, as the transcript is written in.")
         );
 
         // Request-Body erstellen
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "gpt-4o"); // ✅ GPT-4o verwenden
+        requestBody.put("model", "gpt-4o");
         requestBody.put("messages", messages);
         requestBody.put("max_tokens", 150);
         requestBody.put("temperature", 0.7);
 
-        return openAiClient.post()
-                .uri("/v1/chat/completions") // ✅ KORREKTE API-ROUTE
+        // OpenAI API Call mit WebClient
+        String response = openAiClient.post()
+                .uri("/v1/chat/completions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + API_KEY)
                 .bodyValue(requestBody)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        // ✅ JSON parsen und nur den content extrahieren
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+            return rootNode.at("/choices/0/message/content").asText(); // ✅ Nur den Content-Wert zurückgeben
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error parsing response";
+        }
     }
 }
