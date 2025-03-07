@@ -31,4 +31,8 @@ public class TranscriptorService {
     public String generateTranscript(String videoFilePath) {
         return llmClient.generateTranscript(videoFilePath);
     }
+
+    public String generateSummary(String transcript) {
+        return llmClient.generateSummary(transcript);
+    }
 }

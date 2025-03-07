@@ -28,6 +28,10 @@
     <h5>Transcript:</h5>
     <p th:text="${transcript}"></p>
   </div>
+  <div th:if="${summary}">
+    <h5>Summary:</h5>
+    <p th:text="${summary}"></p>
+  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

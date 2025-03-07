@@ -30,9 +30,12 @@ public class TranscriptorController {
         try {
             String filePath = transcriptorService.saveFile(file);
             String transcript = transcriptorService.generateTranscript(filePath);
+            String summary = transcriptorService.generateSummary(transcript);
             redirectAttributes.addFlashAttribute("message", "File uploaded successfully: " + file.getOriginalFilename());
             redirectAttributes.addFlashAttribute("transcript", transcript);
+            redirectAttributes.addFlashAttribute("summary", summary);
             model.addAttribute("transcript", transcript);
+            model.addAttribute("summary", summary);
             return "redirect:/transcriptor";
         } catch (IOException e) {
             e.printStackTrace();
