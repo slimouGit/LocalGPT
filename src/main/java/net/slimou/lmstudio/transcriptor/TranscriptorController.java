@@ -25,6 +25,7 @@ public class TranscriptorController {
         return "transcriptor";
     }
 
+
     @PostMapping("/transcriptor/upload")
     public String handleFileUpload(@RequestParam("videoFile") MultipartFile file, RedirectAttributes redirectAttributes, Model model) {
         try {

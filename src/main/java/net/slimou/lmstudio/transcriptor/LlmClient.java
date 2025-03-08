@@ -57,7 +57,6 @@ public class LlmClient {
                 Map.of("role", "user", "content", "Summarize the following transcript:\n" + transcript + " Use same language, as the transcript is written in.")
         );
 
-        // Request-Body erstellen
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-4o");
         requestBody.put("messages", messages);
