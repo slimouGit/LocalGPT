@@ -2,7 +2,6 @@ package net.slimou.lmstudio.arztlichestellungnahme;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.slimou.lmstudio.PromptGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
