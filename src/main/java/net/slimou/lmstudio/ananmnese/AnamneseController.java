@@ -5,8 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,11 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class AnamneseController {
-    private final LMStudioClient lmStudioClient;
+    private final AnamneseClient lmStudioClient;
     private final String uploadDir = "uploads/";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public AnamneseController(LMStudioClient lmStudioClient) {
+    public AnamneseController(AnamneseClient lmStudioClient) {
         this.lmStudioClient = lmStudioClient;
     }
 

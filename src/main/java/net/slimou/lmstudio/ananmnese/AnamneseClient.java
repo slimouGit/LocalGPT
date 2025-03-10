@@ -6,10 +6,10 @@ import org.springframework.http.MediaType;
 import java.util.*;
 
 @Service
-public class LMStudioClient {
+public class AnamneseClient {
     private final WebClient webClient;
 
-    public LMStudioClient(WebClient.Builder webClientBuilder) {
+    public AnamneseClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl("http://localhost:1234/v1/chat/completions").build();
     }
 
