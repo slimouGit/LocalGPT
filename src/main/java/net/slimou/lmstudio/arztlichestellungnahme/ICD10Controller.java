@@ -1,5 +1,7 @@
 package net.slimou.lmstudio.arztlichestellungnahme;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -7,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 public class ICD10Controller {
 
     private static final Map<String, String> icd10Map = new HashMap<>();
-    private final GPTChatService gptChatService;
+    private final ICD10Service gptChatService;
 
-    public ICD10Controller(GPTChatService gptChatService) {
+    public ICD10Controller(ICD10Service gptChatService) {
         this.gptChatService = gptChatService;
     }
 
@@ -32,7 +34,22 @@ public class ICD10Controller {
         icd10Map.put("M54.6", "Schmerzen im unteren Rückenbereich");
     }
 
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("chatForm", new ChatForm());
+        return "index";
+    }
+
+    @PostMapping("/send")
+    public String send(@ModelAttribute ChatForm chatForm, Model model) {
+        String completion = gptChatService.getCompletion(chatForm.getPrompt(), "");
+        model.addAttribute("response", completion);
+        model.addAttribute("chatForm", chatForm);
+        return "index";
+    }
+
     @GetMapping("/getICD10Code")
+    @ResponseBody
     public String getICD10Code(@RequestParam String description) {
         return icd10Map.entrySet()
                 .stream()
@@ -42,8 +59,15 @@ public class ICD10Controller {
     }
 
     @PostMapping("/sendICDCodes")
+    @ResponseBody
     public String sendICDCodes(@RequestBody Map<String, String> request) {
         String prompt = request.get("prompt");
+        int maxContextLength = 1000; // Model's context length
+
+        if (prompt.length() > maxContextLength) {
+            return "Error: Input prompt is too long. Please provide a shorter input.";
+        }
+
         return gptChatService.getCompletion(Collections.singletonList(prompt), "");
     }
 }

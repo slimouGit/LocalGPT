@@ -16,12 +16,12 @@ import java.util.List;
 import static net.slimou.lmstudio.Config.*;
 
 @Service
-public class GPTChatService {
+public class ICD10Service {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public GPTChatService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public ICD10Service(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
