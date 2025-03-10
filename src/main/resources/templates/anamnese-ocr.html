@@ -1,23 +1,21 @@
-<!-- src/main/resources/templates/anamnese.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Anamnese via Regex</title>
+    <title>Anamnese</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="row">
     <a href="/" class="btn waves-effect waves-light" style="background-color: #ccc;">Ärztliche Stellungnahme</a>
     <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>
-    <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>
-    <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #1535a1;">Anamnese via Regex</a>
+    <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #1535a1;">Anamnese via OCR</a>
+    <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>
     <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcriptor</a>
 </div>
 <div class="container">
-    <h3 class="left">Anamnese via Regex</h3>
-    <form method="POST" enctype="multipart/form-data" action="/anamnese-regex/upload">
+    <h3 class="left">Anamnese OCR</h3>
+    <form method="POST" enctype="multipart/form-data" action="/anamnese/upload">
         <div class="input-field">
-            <label for="file">PDF-Datei hochladen</label>
             <input type="file" id="file" name="file" accept="application/pdf" required>
         </div>
         <div class="input-field">
@@ -31,7 +29,6 @@
         <h5>Analyse Ergebnis:</h5>
         <p th:text="${analysisResult}">Das Ergebnis der Analyse wird hier angezeigt.</p>
     </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
