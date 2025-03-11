@@ -1,8 +1,7 @@
 package net.slimou.lmstudio.anamnese_ocr;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.slimou.lmstudio.anamnese_regex.PdfTextExtractor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,24 +9,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Controller
 public class AnamneseOCRController {
-    private final AnamneseOCRClient lmStudioClient;
+    private final AnamneseOCRService anamneseOCRService;
     private final String uploadDir = "uploads/";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public AnamneseOCRController(AnamneseOCRClient lmStudioClient) {
-        this.lmStudioClient = lmStudioClient;
+    public AnamneseOCRController(AnamneseOCRService anamneseOCRService) {
+        this.anamneseOCRService = anamneseOCRService;
     }
 
     @GetMapping("/anamnese-ocr")
     public String anamnese(Model model) {
-        // Prüfen, ob die HTML-Datei vorhanden ist
         Path templatePath = Paths.get("src/main/resources/templates/anamnese-ocr.html");
         if (!Files.exists(templatePath)) {
             throw new RuntimeException("Die Datei anamnese.html wurde nicht gefunden. Bitte erstellen Sie sie unter src/main/resources/templates/");
@@ -36,26 +36,24 @@ public class AnamneseOCRController {
     }
 
     @PostMapping("/anamnese-ocr/upload")
-    public String uploadAndAnalyze(@RequestParam("file") MultipartFile file, @RequestParam("searchTerm") String searchTerm, Model model) {
+    public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
         try {
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            file.transferTo(filePath);
+            File uploadDir = new File(this.uploadDir);
+            if (!uploadDir.exists()) uploadDir.mkdirs();
 
-            String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString());
-            String modelResponse = lmStudioClient.searchTextWithContext(pdfText, searchTerm);
+            Path filePath = Path.of(this.uploadDir + file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            JsonNode jsonNode = objectMapper.readTree(modelResponse);
-            String modelContent = jsonNode.path("choices").get(0).path("message").path("content").asText();
-
-            model.addAttribute("analysisResult", modelContent);
-            return "anamnese-ocr";
-        } catch (IOException e) {
-            model.addAttribute("error", "Fehler beim Hochladen: " + e.getMessage());
-            return "anamnese-ocr";
+            model.addAttribute("message", "Datei erfolgreich hochgeladen: " + file.getOriginalFilename());
+        } catch (Exception e) {
+            model.addAttribute("message", "Fehler beim Hochladen der Datei.");
         }
+        return "anamnese-ocr";
+    }
+
+    @PostMapping("/anamnese-ocr/search")
+    public ResponseEntity<List<String>> search(@RequestParam("keyword") String keyword) {
+        List<String> results = anamneseOCRService.searchInPDFs(uploadDir, keyword);
+        return ResponseEntity.ok(results);
     }
 }

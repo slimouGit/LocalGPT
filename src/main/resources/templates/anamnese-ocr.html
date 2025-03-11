@@ -3,6 +3,21 @@
 <head>
     <title>Anamnese</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <script>
+        async function searchKeyword() {
+            const keyword = document.getElementById("keyword").value;
+            const response = await fetch('/anamnese-ocr/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ keyword })
+            });
+            const results = await response.json();
+
+            document.getElementById("results").innerHTML = results.length > 0
+                ? results.map(res => `<p>${res.replace(new RegExp(keyword, "gi"), '<b style="color:red;">$&</b>')}</p>`).join('')
+                : "<p>Keine Treffer gefunden.</p>";
+        }
+    </script>
 </head>
 <body>
 <div class="row">
@@ -11,24 +26,21 @@
     <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #1535a1;">Anamnese via OCR</a>
     <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>
     <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcriptor</a>
+
 </div>
 <div class="container">
-    <h3 class="left">Anamnese OCR</h3>
-    <form method="POST" enctype="multipart/form-data" action="/anamnese/upload">
-        <div class="input-field">
-            <input type="file" id="file" name="file" accept="application/pdf" required>
-        </div>
-        <div class="input-field">
-            <label for="searchTerm">Suchbegriff</label>
-            <input type="text" id="searchTerm" name="searchTerm" placeholder="Suchbegriff eingeben" required>
-        </div>
-        <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Analyse starten</button>
+    <h3>Anamnese OCR</h3>
+
+    <form method="post" action="/anamnese-ocr/upload" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit" class="btn">Hochladen</button>
     </form>
 
-    <div class="row">
-        <h5>Analyse Ergebnis:</h5>
-        <p th:text="${analysisResult}">Das Ergebnis der Analyse wird hier angezeigt.</p>
-    </div>
+    <h2>PDF nach Schlagwort durchsuchen</h2>
+    <input type="text" id="keyword" placeholder="Suchbegriff eingeben">
+    <button onclick="searchKeyword()" class="btn">Suchen</button>
+
+    <div id="results"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
