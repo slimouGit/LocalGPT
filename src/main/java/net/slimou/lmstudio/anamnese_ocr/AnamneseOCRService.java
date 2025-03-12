@@ -24,9 +24,6 @@ public class AnamneseOCRService {
         tesseract.setLanguage("deu"); // Deutsche Sprache für OCR
     }
 
-    /**
-     * Durchsucht PDFs nach einem Begriff und gibt relevante Textstellen zurück.
-     */
     public List<String> searchInPDFs(String directory, String keyword) {
         List<String> matchingTexts = new ArrayList<>();
         File dir = new File(directory);
@@ -40,7 +37,7 @@ public class AnamneseOCRService {
                     List<String> results = extractRelevantSentences(text, keyword);
 
                     if (!results.isEmpty()) {
-                        matchingTexts.add("🔍 **Ergebnisse in Datei:** " + file.getName());
+                        matchingTexts.add("🔍 **Results in file:** " + file.getName());
                         matchingTexts.addAll(results);
                     }
                 } catch (Exception e) {
@@ -51,33 +48,58 @@ public class AnamneseOCRService {
         return matchingTexts;
     }
 
-    /**
-     * Extrahiert Text aus einer PDF-Datei mit OCR-Fallback.
-     */
     private String extractTextFromPDF(File file) throws IOException, TesseractException {
         PDDocument document = PDDocument.load(file);
         PDFTextStripper stripper = new PDFTextStripper();
         String text = stripper.getText(document);
         document.close();
 
-        // Falls der Text leer ist, versuche OCR mit Tesseract
         if (text.trim().isEmpty()) {
             text = tesseract.doOCR(file);
         }
         return text;
     }
 
-    /**
-     * Extrahiert alle relevanten Sätze oder Absätze mit dem Suchbegriff.
-     */
     private List<String> extractRelevantSentences(String text, String keyword) {
         List<String> results = new ArrayList<>();
-        Pattern pattern = Pattern.compile("([^\\.\\n]*?\\b" + keyword + "\\b[^\\.\\n]*[\\.\\n])", Pattern.CASE_INSENSITIVE);
+        String[] keywords = SynonymDictionary.getSynonyms(keyword);
+        StringBuilder patternBuilder = new StringBuilder();
+
+        for (String key : keywords) {
+            if (patternBuilder.length() > 0) {
+                patternBuilder.append("|");
+            }
+            patternBuilder.append("\\b").append(Pattern.quote(key)).append("\\b");
+        }
+
+        Pattern pattern = Pattern.compile("([^\\.\\n]*?(" + patternBuilder.toString() + ")[^\\.\\n]*[\\.\\n])", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(text);
 
         while (matcher.find()) {
-            results.add(matcher.group(1).trim());
+            String sentence = matcher.group(1).trim();
+            String additionalInfo = extractAdditionalInfo(sentence, keyword);
+            results.add(sentence + " " + additionalInfo);
         }
         return results;
+    }
+
+    private String extractAdditionalInfo(String sentence, String keyword) {
+        StringBuilder additionalInfo = new StringBuilder();
+
+        // Extract dates
+        Pattern datePattern = Pattern.compile("\\b\\d{1,2}\\.\\d{1,2}\\.\\d{2,4}\\b");
+        Matcher dateMatcher = datePattern.matcher(sentence);
+        while (dateMatcher.find()) {
+            additionalInfo.append(" Date: ").append(dateMatcher.group());
+        }
+
+        // Extract operation types (example pattern, adjust as needed)
+        Pattern operationPattern = Pattern.compile("\\b(" + keyword + "|operation|surgery|procedure)\\b", Pattern.CASE_INSENSITIVE);
+        Matcher operationMatcher = operationPattern.matcher(sentence);
+        while (operationMatcher.find()) {
+            additionalInfo.append(" Type: ").append(operationMatcher.group());
+        }
+
+        return additionalInfo.toString();
     }
 }
