@@ -104,27 +104,28 @@ public class ZusammenfassungService {
             throw new RuntimeException(e);
         }
         String prompt = "Finde zu dem folgendem Keyword '" + keyword + "' Informationen in dem folgenden Gespräch zwischen einem Arzt und einem Patienten '" + anamneseGespraech + "' und Liste nur die bezogen auf das Keyword '"+keyword+"'relevanten Informationen in einem einzigen Satz mit maximal 100 Zeichen auf.";
+
+        List<Map<String, String>> messages = List.of(
+                Map.of("role", "user", "content", prompt)
+        );
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("messages", messages);
+        requestBody.put("max_tokens", MAX_TOKENS);
+        requestBody.put("temperature", TEMPERATURE);
+
+
         String result = "";
         if (source.equals("local")) {
-            result = getLocalResponse(prompt, headers);
+            result = getLocalResponse(requestBody, headers);
         }else {
-            result =  geRemoteResponse(prompt);
+            result =  geRemoteResponse(requestBody);
         }
         return result;
     }
 
-    private String geRemoteResponse(String prompt) {
+    private String geRemoteResponse(Map<String, Object> requestBody){
         System.out.print("REMOTE");
-        List<Map<String, String>> messages = List.of(
-                Map.of("role", "user", "content", prompt)
-        );
-
-        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-4o");
-        requestBody.put("messages", messages);
-        requestBody.put("max_tokens", 150);
-        requestBody.put("temperature", 0.7);
-
         String response = webClient.post()
                 .uri("/v1/chat/completions")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -143,15 +144,11 @@ public class ZusammenfassungService {
         }
     }
 
-    private String getLocalResponse(String prompt, HttpHeaders headers) {
+    private String getLocalResponse(Map<String, Object> requestBody, HttpHeaders headers) {
         System.out.print("LOKAL");
-        String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [" +
-                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}]," +
-                "\"max_tokens\": " + MAX_TOKENS + ", \"temperature\": " + TEMPERATURE + "}";
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-
+        requestBody.put("model", MODEL_NAME);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> response = restTemplate.exchange(LOCAL_API_URL, HttpMethod.POST, entity, String.class);
-        String result = extractContentFromResponse(response.getBody());
-        return result;
+        return extractContentFromResponse(response.getBody());
     }
 }
