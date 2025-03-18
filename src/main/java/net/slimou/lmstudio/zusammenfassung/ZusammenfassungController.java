@@ -38,8 +38,8 @@ public class ZusammenfassungController {
     }
 
     @PostMapping("/zusammenfassung/search")
-    public String searchKeyword(@RequestParam("keyword") String keyword, Model model) {
-        String response = zusammenfassungService.getDataForKeyword(keyword);
+    public String searchKeyword(@RequestParam("keyword") String keyword, @RequestParam("source") String source, Model model) {
+        String response = zusammenfassungService.getDataForKeyword(keyword, source);
         model.addAttribute("response", response);
         return "zusammenfassung";
     }

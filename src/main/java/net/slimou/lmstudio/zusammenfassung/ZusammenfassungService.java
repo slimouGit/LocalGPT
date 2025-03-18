@@ -2,10 +2,10 @@ package net.slimou.lmstudio.zusammenfassung;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.slimou.lmstudio.arztlichestellungnahme.PromptGenerator;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,23 +23,22 @@ public class ZusammenfassungService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final WebClient webClient;
 
-    public ZusammenfassungService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public ZusammenfassungService(RestTemplate restTemplate, ObjectMapper objectMapper, WebClient.Builder webClientBuilder) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.webClient = webClientBuilder.baseUrl("https://api.openai.com").build();
     }
 
     public String getZusammenfassung() {
         ResponseEntity<String> response = null;
         try {
-            // Lade den Inhalt der Datei
-            Path filePath = Paths.get("src/main/resources/AnamneseGespraech.txt");
-            String anamneseGespraech = Files.readString(filePath);
+            String anamneseGespraech = getAnamneseGespraech();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
-            // Erstelle den Prompt
             String prompt = "Bitte analysiere das folgende Arztgespräch und erstelle eine strukturierte Stichpunkt-Zusammenfassung mit den folgenden Kategorien:\n\n" +
                     "- Gesundheitliches Problem\n" +
                     "- Falls Schmerzen, welche Art von Schmerzen und in welchem Ausmaß\n" +
@@ -78,6 +77,12 @@ public class ZusammenfassungService {
         return extractContentFromResponse(response.getBody());
     }
 
+    private static String getAnamneseGespraech() throws IOException {
+        Path filePath = Paths.get("src/main/resources/AnamneseGespraech.txt");
+        String anamneseGespraech = Files.readString(filePath);
+        return anamneseGespraech;
+    }
+
 
     private String extractContentFromResponse(String responseBody) {
         try {
@@ -89,7 +94,64 @@ public class ZusammenfassungService {
         }
     }
 
-    public String getDataForKeyword(String keyword) {
-        return "Ei Gude wie? " + keyword;
+    public String getDataForKeyword(String keyword, String source) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String anamneseGespraech;
+        try {
+            anamneseGespraech = getAnamneseGespraech();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String prompt = "Finde zu dem folgendem Keyword '" + keyword + "' Informationen in dem folgenden Gespräch zwischen einem Arzt und einem Patienten '" + anamneseGespraech + "' und Liste nur die bezogen auf das Keyword '"+keyword+"'relevanten Informationen in einem einzigen Satz mit maximal 100 Zeichen auf.";
+        String result = "";
+        if (source.equals("local")) {
+            result = getLocalResponse(prompt, headers);
+        }else {
+            result =  geRemoteResponse(prompt);
+        }
+        return result;
+    }
+
+    private String geRemoteResponse(String prompt) {
+        System.out.print("REMOTE");
+        List<Map<String, String>> messages = List.of(
+                Map.of("role", "user", "content", prompt)
+        );
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", "gpt-4o");
+        requestBody.put("messages", messages);
+        requestBody.put("max_tokens", 150);
+        requestBody.put("temperature", 0.7);
+
+        String response = webClient.post()
+                .uri("/v1/chat/completions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + API_KEY)
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+            return rootNode.at("/choices/0/message/content").asText();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error parsing response";
+        }
+    }
+
+    private String getLocalResponse(String prompt, HttpHeaders headers) {
+        System.out.print("LOKAL");
+        String requestBody = "{\"model\": \"" + MODEL_NAME + "\", \"messages\": [" +
+                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}]," +
+                "\"max_tokens\": " + MAX_TOKENS + ", \"temperature\": " + TEMPERATURE + "}";
+        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(LOCAL_API_URL, HttpMethod.POST, entity, String.class);
+        String result = extractContentFromResponse(response.getBody());
+        return result;
     }
 }
