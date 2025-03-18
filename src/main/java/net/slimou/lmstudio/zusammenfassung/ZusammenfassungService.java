@@ -88,4 +88,8 @@ public class ZusammenfassungService {
             return "Error parsing response";
         }
     }
+
+    public String getDataForKeyword(String keyword) {
+        return "Ei Gude wie? " + keyword;
+    }
 }

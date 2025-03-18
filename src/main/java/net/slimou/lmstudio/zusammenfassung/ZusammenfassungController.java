@@ -3,6 +3,8 @@ package net.slimou.lmstudio.zusammenfassung;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +33,14 @@ public class ZusammenfassungController {
     @GetMapping("/zusammenfassung/generate")
     public String generateZusammenfassung(Model model) {
         String zusammenfassung = zusammenfassungService.getZusammenfassung();
-        model.addAttribute("response", zusammenfassung);
+        model.addAttribute("zusammenfassung", zusammenfassung);
+        return "zusammenfassung";
+    }
+
+    @PostMapping("/zusammenfassung/search")
+    public String searchKeyword(@RequestParam("keyword") String keyword, Model model) {
+        String response = zusammenfassungService.getDataForKeyword(keyword);
+        model.addAttribute("response", response);
         return "zusammenfassung";
     }
 }

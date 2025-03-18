@@ -19,6 +19,20 @@
     <a href="/zusammenfassung/generate" class="btn waves-effect waves-light" style="background-color: #1535a1;">Generate Zusammenfassung</a>
   </div>
   <div class="row">
+    <div th:if="${zusammenfassung}">
+      <p th:utext="${zusammenfassung}"></p>
+    </div>
+  </div>
+  <div class="row">
+    <form action="/zusammenfassung/search" method="post">
+      <div class="input-field col s6">
+        <input id="keyword" name="keyword" type="text" class="validate">
+        <label for="keyword">Keyword</label>
+      </div>
+      <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Search</button>
+    </form>
+  </div>
+  <div class="row">
     <div th:if="${response}">
       <p th:utext="${response}"></p>
     </div>
