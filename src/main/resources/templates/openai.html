@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OpenAI</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+  <a href="/" class="btn waves-effect waves-light" style="background-color: #ccc;">Ärztliche Stellungnahme</a>
+  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>
+  <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>
+  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>
+  <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcriptor</a>
+  <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Zusammenfassung</a>
+  <a href="/openai" class="btn waves-effect waves-light" style="background-color: #1535a1;">OpenAi</a>
+  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>
+
+
+</div>
+<div class="container">
+<h1>OpenAI Chat</h1>
+<form method="post" action="/openai">
+  <label for="userInput">Nachricht an OpenAI:</label><br>
+  <textarea id="userInput" name="userInput" rows="4" cols="50"></textarea><br><br>
+  <button type="submit">Senden</button>
+</form>
+
+<div th:if="${response}">
+  <h3>Antwort von OpenAI:</h3>
+  <p th:text="${response}"></p>
+</div>
+</div>
+</body>
+</html>
