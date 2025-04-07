@@ -24,46 +24,51 @@ public class WatsonXService {
     @Value("${watsonx.model-id}")
     private String modelId;
 
-    private String getIamToken() {
-        WebClient client = WebClient.builder().build();
+    private final WebClient webClient = WebClient.builder().build();
 
-        return client.post()
+    public String getWatsonxResponse(String userInput) {
+        try {
+            String token = fetchIamToken();
+
+            Map<String, Object> requestBody = Map.of(
+                    "model_id", modelId,
+                    "input", userInput,
+                    "parameters", Map.of(
+                            "decoding_method", "greedy",
+                            "max_new_tokens", 200
+                    ),
+                    "project_id", projectId
+            );
+
+            return webClient.post()
+                    .uri(uriBuilder -> uriBuilder
+                            .scheme("https")
+                            .host("eu-de.ml.cloud.ibm.com")
+                            .path("/ml/v1/text/generation")
+                            .queryParam("version", "2023-05-29")
+                            .build())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .map(json -> json.at("/results/0/generated_text").asText())
+                    .block();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Fehler bei der Anfrage: " + e.getMessage();
+        }
+    }
+
+    private String fetchIamToken() {
+        return webClient.post()
                 .uri("https://iam.cloud.ibm.com/identity/token")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .bodyValue("grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=" + apiKey)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(json -> json.get("access_token").asText())
-                .block();
-    }
-
-    public String getWatsonxResponse(String userInput) {
-        String token = getIamToken();
-
-        Map<String, Object> requestBody = Map.of(
-                "model_id", modelId,
-                "input", userInput,
-                "parameters", Map.of(
-                        "decoding_method", "greedy",
-                        "max_new_tokens", 200
-                ),
-                "project_id", projectId
-        );
-
-        return WebClient.builder()
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build()
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/ml/v1/text/generation")
-                        .queryParam("version", "2023-05-29")
-                        .build())
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(JsonNode.class)
-                .map(json -> json.at("/results/0/generated_text").asText())
                 .block();
     }
 }

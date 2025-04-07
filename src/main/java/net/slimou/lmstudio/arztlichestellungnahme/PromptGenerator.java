@@ -16,7 +16,7 @@ public class PromptGenerator {
 
         String combinedPrompt = "Diagnose: " + enteredDiagnosis + ". " + selectedIcds;
 
-        String additionalInstructions = "Beschreibe die gesundheitliche Situation des Patienten, erläutere die empfohlene Behandlung und gib eine Einschätzung zur Prognose basierend auf den oder die angegebenen ICD-Code. Orientiere dich dabei am Wortlaut und an den Formulierungen aus den Beispielen: " + exampleTexts;
+        String additionalInstructions = "Beschreibe die gesundheitliche Situation des Patienten, erläutere die empfohlene Behandlung und gib eine Einschätzung zur Prognose basierend auf den oder die angegebenen ICD-Code. Orientiere dich dabei bevorzugt am Wortlaut und an den Formulierungen aus den Beispielen: " + exampleTexts;
 
         return systemPrompt + combinedPrompt + additionalInstructions;
     }

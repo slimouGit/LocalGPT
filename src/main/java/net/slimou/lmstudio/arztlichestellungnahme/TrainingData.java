@@ -20,8 +20,7 @@ public class TrainingData {
         trainingDataMap.put("C34.9", "Der Patient wurde mit einem bösartigen Tumor der Lunge (C34.9) diagnostiziert. Eine weiterführende Diagnostik und stadiengerechte Therapieplanung sind dringend erforderlich, da die Erkrankung bereits Symptome wie anhaltenden Husten und Gewichtsverlust verursacht hat.");
         trainingDataMap.put("F32.0_M54.5", "Die Patientin beschreibt Kreuzschmerzen (M54.5), die durch ihre depressive Stimmungslage (F32.0) verstärkt werden. Eine kombinierte Therapie aus psychotherapeutischen Ansätzen und physikalischer Therapie wird als geeignet angesehen, um beide Beschwerden zu lindern.");
         trainingDataMap.put("E11.9_N39.0", "Die Patientin mit langjährigem Typ-2-Diabetes mellitus (E11.9) klagt über wiederholte Harnwegsinfektionen (N39.0). Dies könnte auf eine diabetische Stoffwechsellage hinweisen, die optimiert werden sollte, um das Risiko weiterer Infektionen zu reduzieren.");
-//        trainingDataMap.put("M54.6", "Der Patient leidet unter epileptischen Anfällen, die regelmäßig auftreten.");
-        trainingDataMap.put("M54.6", "Der Patient symoliert seine schmerzen nur.");
+        trainingDataMap.put("M54.6", "Der Patient leidet unter epileptischen Anfällen, die regelmäßig auftreten.");
 
 
     }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WartsonX</title>
+    <meta charset="UTF-8">
+    <title>PDF Zusammenfassung</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body>
@@ -14,25 +14,28 @@
   <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcriptor</a>
   <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Zusammenfassung</a>
   <a href="/openai" class="btn waves-effect waves-light" style="background-color: #ccc;">OpenAi</a>
-  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #1535a1;">WatsonX</a>
-  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">PDF-Zusammenfassung</a>
+  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>
+  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #1535a1;">PDF-Zusammenfassung</a>
 
 </div>
 <div class="container">
-<h1>WatsonX Chat</h1>
-  <form method="post" action="/watsonx">
-    <label for="userInput">Nachricht eingeben:</label><br>
-    <textarea id="userInput" name="userInput" rows="4" cols="60" placeholder="Frage etwas an watsonx..."></textarea><br><br>
-    <button type="submit">Senden</button>
+  <h3 class="left">PDF Zusammenfassung</h3>
+
+  <form method="POST" enctype="multipart/form-data" action="/pdf/upload">
+    <div class="input-field">
+      <input type="file" id="file" name="file" accept="application/pdf" required>
+    </div>
+    <div class="input-field">
+      <label for="searchTerm">Suchbegriff</label>
+      <input type="text" id="searchTerm" name="searchTerm" placeholder="Suchbegriff eingeben" required>
+    </div>
+    <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Analyse starten</button>
+    <div class="row">
+      <h5>Analyse Ergebnis:</h5>
+      <p th:text="${response}">Das Ergebnis der Analyse wird hier angezeigt.</p>
+    </div>
   </form>
-
-  <hr>
-
-  <!-- Antwort von Watsonx anzeigen -->
-  <div th:if="${response}">
-    <h3>Antwort von Watsonx:</h3>
-    <p th:text="${response}"></p>
-  </div>
 </div>
+
 </body>
 </html>

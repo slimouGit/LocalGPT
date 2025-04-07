@@ -5,6 +5,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.MediaType;
 import java.util.*;
 
+import static net.slimou.lmstudio.Config.MODEL_NAME;
+
 @Service
 public class AnamneseClient {
     private final WebClient webClient;
@@ -15,7 +17,7 @@ public class AnamneseClient {
 
     public String searchTextWithContext(String pdfText, String query) {
         Map<String, Object> requestBody = Map.of(
-                "model", "llama-2-7b-chat",
+                "model", MODEL_NAME,
                 "messages", List.of(
                         Map.of("role", "system", "content", "Du bist ein medizinischer Dokumentenanalyst."),
                         Map.of("role", "user", "content", "Finde nur die relevanten Informationen zu: '" + query + " also die Informationen, die sich direkt auf " + query + " beziehen '\n" + pdfText + " Erfasse nur die Daten aus dem Dokument und verzichte auf eigene Kommentare und Interprätationen. Verzichte auch auf Angaben zur Person.")
