@@ -19,19 +19,20 @@
 
 </div>
 <div class="container">
-  <h3 class="left">PDF Zusammenfassung</h3>
+  <h3 class="left">Anamnese Informationen</h3>
 
   <form method="POST" enctype="multipart/form-data" action="/pdf/upload">
     <div class="input-field">
       <input type="file" id="file" name="file" accept="application/pdf" required>
     </div>
     <div class="input-field">
-      <label for="searchTerm">Suchbegriff</label>
+      <label for="searchTerm">Stichwort</label>
       <input type="text" id="searchTerm" name="searchTerm" placeholder="Suchbegriff eingeben" required>
     </div>
-    <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Analyse starten</button>
-    <div class="row">
-      <h5>Analyse Ergebnis:</h5>
+    <button type="submit" class="btn waves-effect waves-light" style="background-color: #1535a1;">Informationen zu Suchbegriff extrahieren</button>
+    <div class="row" th:if="${response}">
+      <p>Extrahierte Informationen zu:
+      <span style="font-weight: bold" th:text="${searchTerm}"></span> </p>
       <p th:text="${response}">Das Ergebnis der Analyse wird hier angezeigt.</p>
     </div>
   </form>

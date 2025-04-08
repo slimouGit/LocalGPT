@@ -1,6 +1,5 @@
 package net.slimou.lmstudio.pdfzusammenfassung;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import net.slimou.lmstudio.anamnese_regex.PdfTextExtractor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,35 +16,44 @@ import java.nio.file.Paths;
 @Controller
 public class PdfZusammenfassungController {
 
-    private final String uploadDir = "uploads/";
-    PdfZusammenfassungService pdfZusammenfassungService;
+    private static final String UPLOAD_DIR = "uploads/";
+    private final PdfZusammenfassungService pdfZusammenfassungService;
 
-    public PdfZusammenfassungController(PdfZusammenfassungService pdfZusammenfassungService) {
+    public PdfZusammenfassungController(final PdfZusammenfassungService pdfZusammenfassungService) {
         this.pdfZusammenfassungService = pdfZusammenfassungService;
     }
 
     @GetMapping("/pdf-zusammenfassung")
-    public String showPdfZusammenfassungPage(Model model) {
+    public String showPdfZusammenfassungPage() {
         return "pdf-zusammenfassung";
     }
 
     @PostMapping("/pdf/upload")
-    public String uploadAndAnalyze(@RequestParam("file") MultipartFile file, @RequestParam("searchTerm") String searchTerm, Model model) {
+    public String uploadAndAnalyze(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("searchTerm") String searchTerm,
+                                   Model model) {
         try {
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(file.getOriginalFilename());
-            file.transferTo(filePath);
+            Path filePath = saveUploadedFile(file);
             String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString());
-            String response = this.pdfZusammenfassungService.getInfoBySearchword(pdfText, searchTerm);
-            model.addAttribute("response", response);
+            String response = pdfZusammenfassungService.getInfoBySearchword(pdfText, searchTerm);
 
-            return "pdf-zusammenfassung";
+            model.addAttribute("response", response);
+            model.addAttribute("searchTerm", searchTerm);
         } catch (IOException e) {
-            model.addAttribute("error", "Fehler beim Hochladen: " + e.getMessage());
-            return "pdf-zusammenfassung";
+            model.addAttribute("error", "File upload error: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred: " + e.getMessage());
         }
+        return "pdf-zusammenfassung";
+    }
+
+    private Path saveUploadedFile(MultipartFile file) throws IOException {
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        Path filePath = uploadPath.resolve(file.getOriginalFilename());
+        file.transferTo(filePath);
+        return filePath;
     }
 }
