@@ -48,12 +48,19 @@ public class PdfZusammenfassungController {
     }
 
     private Path saveUploadedFile(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
+        Path uploadPath = ensureUploadDirectoryExists();
         Path filePath = uploadPath.resolve(file.getOriginalFilename());
         file.transferTo(filePath);
         return filePath;
     }
+
+    private Path ensureUploadDirectoryExists() throws IOException {
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        return uploadPath;
+    }
+
+
 }
