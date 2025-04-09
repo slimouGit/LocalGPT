@@ -8,20 +8,21 @@ import org.springframework.stereotype.Component;
 public class MyScheduler {
 
     private final MySchedulerService myService;
+    private final MySchedulerChecker mySchedulerChecker;
 
-    @Value("${scheduler.enabled}")
-    private boolean schedulerEnabled;
-
-//    @Value("${scheduler.fixedRate}")
-//    private long fixedRate;
-
-    public MyScheduler(MySchedulerService myService) {
+    public MyScheduler(MySchedulerService myService, MySchedulerChecker mySchedulerChecker) {
         this.myService = myService;
+        this.mySchedulerChecker = mySchedulerChecker;
     }
+
+    private boolean shouldExecuteScheduledTask() {
+        return mySchedulerChecker.isSchedulerEnabled();
+    }
+
 
     @Scheduled(fixedRateString = "${scheduler.fixedRate}")
     public void scheduleTask() {
-        if (schedulerEnabled) {
+        if (shouldExecuteScheduledTask()) {
             myService.doScheduledTask();
         } else {
             System.out.println("Scheduler ist deaktiviert.");
