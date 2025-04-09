@@ -12,8 +12,8 @@ public class MyScheduler {
     @Value("${scheduler.enabled}")
     private boolean schedulerEnabled;
 
-    @Value("${scheduler.fixedRate}")
-    private long fixedRate;
+//    @Value("${scheduler.fixedRate}")
+//    private long fixedRate;
 
     public MyScheduler(MySchedulerService myService) {
         this.myService = myService;
