@@ -3,6 +3,7 @@ package net.slimou.lmstudio.pdfzusammenfassung;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -75,4 +76,5 @@ public class PdfZusammenfassungService {
             return "Error parsing response: " + e.getMessage();
         }
     }
+
 }

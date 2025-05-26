@@ -3,18 +3,40 @@
 <head>
   <title>Transcript</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.querySelector("form");
+      const loadingMessage = document.getElementById("loadingMessage");
+      const transcriptContainer = document.querySelector("[th\\:if='${transcript}']");
+
+      form.addEventListener("submit", function() {
+        loadingMessage.style.display = "block"; // Show loading message
+      });
+
+      const observer = new MutationObserver(function() {
+        if (transcriptContainer && transcriptContainer.innerHTML.trim() !== "") {
+          loadingMessage.style.display = "none"; // Hide loading message
+        }
+      });
+
+      // Observe changes in the transcript container
+      if (transcriptContainer) {
+        observer.observe(transcriptContainer, { childList: true, subtree: true });
+      }
+    });
+  </script>
 </head>
 <body>
 <div class="row">
   <a href="/" class="btn waves-effect waves-light" style="background-color: #ccc;">Ärztliche Stellungnahme</a>
-  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>
-  <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>
-  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>
+<!--  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>-->
+<!--  <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>-->
+<!--  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>-->
   <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #1535a1;">Transcriptor</a>
-  <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Zusammenfassung</a>
-  <a href="/openai" class="btn waves-effect waves-light" style="background-color: #ccc;">OpenAi</a>
-  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>
-  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">PDF-Zusammenfassung</a>
+  <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Extrahierte Informationen aus Anamnese-Gespräch</a>
+<!--  <a href="/openai" class="btn waves-effect waves-light" style="background-color: #ccc;">OpenAi</a>-->
+<!--  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>-->
+  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Extrahierte Informationen aus Anamnese-Bogen</a>
 
 
 </div>
@@ -38,6 +60,9 @@
     <h5>Zusammenfassung:</h5>
     <p th:text="${summary}"></p>
   </div>
+
+  <div id="loadingMessage" style="color: red; margin-top: 1em; display: none;">Transcript und Zusammenfassung werden generiert...</div>  </div>
+
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

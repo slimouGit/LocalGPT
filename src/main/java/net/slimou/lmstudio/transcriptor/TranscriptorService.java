@@ -67,7 +67,7 @@ public class TranscriptorService {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-4o");
         requestBody.put("messages", messages);
-        requestBody.put("max_tokens", 150);
+        requestBody.put("max_tokens", 1000);
         requestBody.put("temperature", 0.7);
 
         String response = webClient.post()

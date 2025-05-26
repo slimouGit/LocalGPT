@@ -22,25 +22,25 @@ public class ZusammenfassungController {
     @GetMapping("/zusammenfassung")
     public String zusammenfassung(Model model) {
         // Prüfen, ob die HTML-Datei vorhanden ist
-        Path templatePath = Paths.get("src/main/resources/templates/zusammenfassung.html");
+        Path templatePath = Paths.get("src/main/resources/templates/keywordinfo.html");
         if (!Files.exists(templatePath)) {
-            throw new RuntimeException("Die Datei zusammenfassung.html wurde nicht gefunden. Bitte erstellen Sie sie unter src/main/resources/templates/");
+            throw new RuntimeException("Die Datei keywordinfo.html wurde nicht gefunden. Bitte erstellen Sie sie unter src/main/resources/templates/");
         }
 
-        return "zusammenfassung";
+        return "keywordinfo";
     }
 
     @GetMapping("/zusammenfassung/generate")
     public String generateZusammenfassung(Model model) {
         String zusammenfassung = zusammenfassungService.getZusammenfassung();
         model.addAttribute("zusammenfassung", zusammenfassung);
-        return "zusammenfassung";
+        return "keywordinfo";
     }
 
     @PostMapping("/zusammenfassung/search")
     public String searchKeyword(@RequestParam("keyword") String keyword, @RequestParam("source") String source, Model model) {
         String response = zusammenfassungService.getDataForKeyword(keyword, source);
         model.addAttribute("response", response);
-        return "zusammenfassung";
+        return "keywordinfo";
     }
 }

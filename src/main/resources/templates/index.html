@@ -23,7 +23,7 @@
     }
 
     function sendICDCodes() {
-      const prompt = collectedICDCodes.join(", ");
+      const diagnose = collectedICDCodes.join(", ");
       const loadingMessage = document.getElementById("loadingMessage");
       loadingMessage.style.display = "block"; // Show loading message
 
@@ -32,14 +32,14 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ diagnose })
       })
               .then(response => response.text())
               .then(data => {
                 const responseTextarea = document.getElementById("responseTextarea");
                 responseTextarea.value = data;
                 adjustTextareaHeight(responseTextarea);
-                loadingMessage.style.display = "none"; // Hide loading message
+                loadingMessage.style.display = "none";
               });
     }
 
@@ -63,19 +63,21 @@
         adjustTextareaHeight(responseTextarea);
       });
     });
+
   </script>
 </head>
 <body>
 <div class="row">
   <a href="/" class="btn waves-effect waves-light" style="background-color: #1535a1;">Ärztliche Stellungnahme</a>
-  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>
-  <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>
-  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>
-  <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcriptor</a>
-  <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Zusammenfassung</a>
-  <a href="/openai" class="btn waves-effect waves-light" style="background-color: #ccc;">OpenAi</a>
-  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>
-  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">PDF-Zusammenfassung</a>
+<!--  <a href="/anamnese" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via AI</a>-->
+<!---->
+<!--  <a href="/transcriptor" class="btn waves-effec  <a href="/anamnese-ocr" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via OCR</a>&ndash;&gt;-->
+<!--  <a href="/anamnese-regex" class="btn waves-effect waves-light" style="background-color: #ccc;">Anamnese via Regex</a>t waves-light" style="background-color: #ccc;">Transcriptor</a>-->
+  <a href="/transcriptor" class="btn waves-effect waves-light" style="background-color: #ccc;">Transcript</a>
+  <a href="/zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Extrahierte Informationen aus Anamnese-Gespräch</a>
+  <!--  <a href="/openai" class="btn waves-effect waves-light" style="background-color: #ccc;">OpenAi</a>-->
+<!--  <a href="/watsonx" class="btn waves-effect waves-light" style="background-color: #ccc;">WatsonX</a>-->
+  <a href="/pdf-zusammenfassung" class="btn waves-effect waves-light" style="background-color: #ccc;">Extrahierte Informationen aus Anamnese-Bogen</a>
 
 
 </div>
@@ -85,6 +87,20 @@
     <form id="searchForm">
       <input type="text" id="description" required>
     </form>
+    <!--
+    <p>
+      <label>
+        <input name="source" type="radio" value="remote" checked />
+        <span>Remote</span>
+      </label>
+    </p>
+    <p>
+      <label>
+        <input name="source" type="radio" value="local" />
+        <span>Lokal</span>
+      </label>
+    </p>
+    -->
     <div id="results"></div>
     <button id="sendButton" class="btn waves-effect waves-light" style="background-color: #1535a1;margin-top:1em;">Speichern</button>
   </div>
@@ -93,8 +109,7 @@
       <h3 class="left">Wertende Ärztliche Stellungnahme</h3>
     </div>
     <textarea id="responseTextarea" class="materialize-textarea"></textarea>
-    <div id="loadingMessage" style="display:none; color: red; margin-top: 1em;">Die Stellungnahme wird generiert...</div>
-  </div>
+    <div id="loadingMessage" style="color: red; margin-top: 1em; display: none;">Die Stellungnahme wird generiert...</div>  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>

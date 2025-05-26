@@ -43,7 +43,7 @@ public class AnamneseController {
             Path filePath = uploadPath.resolve(file.getOriginalFilename());
             file.transferTo(filePath);
 
-            String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString());
+            String pdfText = PdfTextExtractor.extractTextFromPdf(filePath.toString().getBytes());
             String modelResponse = lmStudioClient.searchTextWithContext(pdfText, searchTerm);
 
             JsonNode jsonNode = objectMapper.readTree(modelResponse);
