@@ -1,11 +1,9 @@
 package net.slimou.lmstudio.arztlichestellungnahme;
 
+import net.slimou.lmstudio.arztlichestellungnahme.helper.ICD10Libary;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,18 +18,8 @@ public class ICD10Controller {
         this.icd10Libary = new ICD10Libary();
     }
 
-
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("chatForm", new ChatForm());
-        return "index";
-    }
-
-    @PostMapping("/send")
-    public String send(@ModelAttribute ChatForm chatForm, Model model) {
-        String completion = gptChatService.getCompletion(chatForm.getPrompt());
-        model.addAttribute("response", completion);
-        model.addAttribute("chatForm", chatForm);
+    public String index() {
         return "index";
     }
 
@@ -49,6 +37,6 @@ public class ICD10Controller {
     @ResponseBody
     public String sendICDCodes(@RequestBody Map<String, String> request) {
         String diagnose = request.get("diagnose");
-        return gptChatService.getCompletion(Collections.singletonList(diagnose));
+        return gptChatService.getCompletion(diagnose);
     }
 }

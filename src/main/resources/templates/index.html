@@ -17,7 +17,7 @@
                   const newResult = document.createElement("div");
                   newResult.textContent = data;
                   resultDiv.appendChild(newResult);
-                  document.getElementById("description").value = ""; // Reset the input field
+                  document.getElementById("description").value = "";
                 }
               });
     }
@@ -25,7 +25,7 @@
     function sendICDCodes() {
       const diagnose = collectedICDCodes.join(", ");
       const loadingMessage = document.getElementById("loadingMessage");
-      loadingMessage.style.display = "block"; // Show loading message
+      loadingMessage.style.display = "block";
 
       fetch('/sendICDCodes', {
         method: 'POST',
@@ -87,20 +87,6 @@
     <form id="searchForm">
       <input type="text" id="description" required>
     </form>
-    <!--
-    <p>
-      <label>
-        <input name="source" type="radio" value="remote" checked />
-        <span>Remote</span>
-      </label>
-    </p>
-    <p>
-      <label>
-        <input name="source" type="radio" value="local" />
-        <span>Lokal</span>
-      </label>
-    </p>
-    -->
     <div id="results"></div>
     <button id="sendButton" class="btn waves-effect waves-light" style="background-color: #1535a1;margin-top:1em;">Speichern</button>
   </div>

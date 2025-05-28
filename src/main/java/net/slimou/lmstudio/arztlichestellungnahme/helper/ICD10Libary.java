@@ -1,4 +1,4 @@
-package net.slimou.lmstudio.arztlichestellungnahme;
+package net.slimou.lmstudio.arztlichestellungnahme.helper;
 
 import java.util.HashMap;
 import java.util.Map;
